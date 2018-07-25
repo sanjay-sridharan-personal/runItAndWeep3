@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="LoreSoft.MathExpressions\ConvertExpression.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\MathOperators.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\NumberExpression.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\MathEvaluator.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\VariableDictionary.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\ParseException.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\FunctionExpression.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\MathEvaluate.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\Properties\AssemblyInfo.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\Properties\Resources.Designer.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\ExpressionBase.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\UnitConversion\TimeConverter.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\UnitConversion\MassConverter.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\UnitConversion\UnitType.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\UnitConversion\TemperatureConverter.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\UnitConversion\LengthConverter.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\UnitConversion\SpeedConverter.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\UnitConversion\VolumeConverter.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\OperatorExpression.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\IExpression.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\Metadata\AbbreviationAttribute.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\Metadata\AttributeReader.cs" />
+    <Compile Remove="LoreSoft.MathExpressions\GlobalSuppressions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="LoreSoft.MathExpressions\Properties\Resources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="LoreSoft.MathExpressions\MathExpressions.snk" />
+  </ItemGroup>
+</Project>
