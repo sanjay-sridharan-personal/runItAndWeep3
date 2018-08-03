@@ -70,10 +70,22 @@ class RunMain
     //          the first character of the expression to be the first character
     //          of the leftmost operand also. Also, as expression does not contain
     //          whitespace, we expect the character that follows the leftmost operand
-    //          to be an operator
+    //          to be an operator. Assumption: User input will NOT include exponential
+    //          notation, e.g. "1E2" which evaluates to 100
     static string ReadLeftmostOperandAsString(string expression)
     {
-        return null;
+        string firstCharacter = "-+0123456789.";
+        string regularCharacter = "0123456789.";
+        bool hasDecimalPoint = false;
+
+        // Parse expression by copying its characters to an operand string which
+        // will be returned by this function
+        string returnOperand = string.Empty;
+        int operandCharacterIndex = 0;
+        if (firstCharacter.Contains(expression[operandCharacterIndex]))
+            returnOperand += expression[operandCharacterIndex];
+
+        return returnOperand;
     }
 
     // @returns This function takes a string and attempts to convert it to a double.
