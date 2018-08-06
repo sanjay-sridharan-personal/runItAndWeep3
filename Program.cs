@@ -74,18 +74,58 @@ class RunMain
     //          notation, e.g. "1E2" which evaluates to 100
     static string ReadLeftmostOperandAsString(string expression)
     {
-        string firstCharacter = "-+0123456789.";
-        string regularCharacter = "0123456789.";
-        bool hasDecimalPoint = false;
+        string operand = string.Empty;
+        bool operandContainsDecimalPoint = false;
+        for (int expressionIndex = 0; expressionIndex < expression.Length; ++expressionIndex)
+        {
+            // Parse expression by copying its characters to an operand until, but not
+            // including, the operator that follows the leftmost operand. An operand
+            // can contain exactly 0 or 1 decimal points
+            bool isDecimalPoint = false;
+            char currentChar = expression[expressionIndex];
+            bool isValid = IsValidCharacter(out isDecimalPoint, currentChar, 0 == expressionIndex);
+            operand += currentChar;
 
-        // Parse expression by copying its characters to an operand string which
-        // will be returned by this function
-        string returnOperand = string.Empty;
-        int operandCharacterIndex = 0;
-        if (firstCharacter.Contains(expression[operandCharacterIndex]))
-            returnOperand += expression[operandCharacterIndex];
+            if (!isValid)
+                ExitProgramWithReason($"The final character of \"{operand}\" is invalid");
+            
+            if (isDecimalPoint)
+            {
+                if (expressionIndex + 1 == expression.Length)
+                    ExitProgramWithReason($"\"{operand}\" needs a digit after the decimal point");
 
-        return returnOperand;
+                if (operandContainsDecimalPoint)
+                    ExitProgramWithReason($"\"{operand}\" contains multiple decimal points");
+                
+                operandContainsDecimalPoint = true;
+            }
+        }
+
+        return operand;
+    }
+
+    // @returns This function determines whether the character passed in is valid
+    //          in any operand. Note: the operand itself is NOT passed in
+    // @param isDecimalPoint Returns whether the character is a decimal point
+    // @param character The character to test
+    // @param isLeftmost Pass in true if the character is the leftmost one of the
+    //        operand, otherwise pass in false
+    static bool IsValidCharacter(out bool isDecimalPoint, char character, bool isLeftmost)
+    {
+        const string regularCharacters = "0123456789";
+        const char   optionalDecimalPoint = '.';
+        const string optionalLeadingSigns = "+-";
+
+        string validCharacterSet = regularCharacters + optionalDecimalPoint;
+        if (isLeftmost)
+            validCharacterSet += optionalLeadingSigns;
+
+        if (optionalDecimalPoint == character)
+            isDecimalPoint = true;
+        else
+            isDecimalPoint = false;
+
+        return -1 != validCharacterSet.IndexOf(character);
     }
 
     // @returns This function takes a string and attempts to convert it to a double.
@@ -97,10 +137,8 @@ class RunMain
         bool isValidDouble = Double.TryParse(operandString, out operandDouble);
         if (!isValidDouble)
         {
-            Console.WriteLine($"\n\"{operandString}\" is not a valid number, therefore," +
-                              " this program has exited.");
-            const int userError = 0;
-            Environment.Exit(userError);
+            ExitProgramWithReason($"\"{operandString}\" is not a valid number, " +
+                                  "therefore, this program has exited");
         }
 
         return operandDouble;
@@ -115,5 +153,14 @@ class RunMain
             sum += operand;
 
         return sum;
+    }
+
+    // This function terminates the program and outputs the reason for it
+    // @param reason The reason to terminate the program
+    static void ExitProgramWithReason(string reason)
+    {
+        Console.WriteLine("\n" + reason);
+        const int userError = 0;
+        Environment.Exit(userError);
     }
 }
