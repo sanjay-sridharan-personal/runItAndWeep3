@@ -65,13 +65,15 @@ class RunMain
         return operandArray;
     }
 
-    // @returns This function parses the passed-in expression and returns a truncated
-    //          version of it that contains just the leftmost operand. We expect
-    //          the first character of the expression to be the first character
-    //          of the leftmost operand also. Also, as expression does not contain
-    //          whitespace, we expect the character that follows the leftmost operand
-    //          to be an operator. Assumption: User input will NOT include exponential
-    //          notation, e.g. "1E2" which evaluates to 100
+    // @returns This function parses the passed-in expression and returns the leftmost
+    //          operand. Here are the termination conditions for the operand:
+    //          1. End of expression terminates the operand. Therefore, it is acceptable
+    //             for the expression to consist of a single operand without any operators
+    //          2. As expression does not contain whitespace, we expect the character immediately
+    //             following the leftmost operand to be an operator. Assumption: User input will
+    //             NOT include exponential notation, e.g. 1E2 which evaluates to 100
+    // @param expression The arithmetic expression. Assumption: expression contains
+    //        NO whitespace or parenthesis like ( or )
     static string ReadLeftmostOperandAsString(string expression)
     {
         string operand = string.Empty;
@@ -83,19 +85,28 @@ class RunMain
             // can contain exactly 0 or 1 decimal points
             bool isDecimalPoint = false;
             char currentChar = expression[expressionIndex];
-            bool isValid = IsValidCharacter(out isDecimalPoint, currentChar, 0 == expressionIndex);
-            operand += currentChar;
+            bool isValidCharacter = IsValidCharacter(out isDecimalPoint, currentChar, 0 == expressionIndex);
+            if (!isValidCharacter)
+            {
+                // Determine whether the character is a valid operator which signifies
+                // that we have reached the end of the operand. If the character is
+                // NOT an operator it is an error
+                bool isValidOperator = IsValidOperator(currentChar);
+                if (isValidOperator)
+                    return operand;
 
-            if (!isValid)
-                ExitProgramWithReason($"The final character of \"{operand}\" is invalid");
-            
+                operand += currentChar;
+                ExitProgramWithReason($"The final character of {operand} is invalid");
+            }
+
+            operand += currentChar;
             if (isDecimalPoint)
             {
                 if (expressionIndex + 1 == expression.Length)
-                    ExitProgramWithReason($"\"{operand}\" needs a digit after the decimal point");
+                    ExitProgramWithReason($"{operand} must not end with a decimal point");
 
                 if (operandContainsDecimalPoint)
-                    ExitProgramWithReason($"\"{operand}\" contains multiple decimal points");
+                    ExitProgramWithReason($"{operand} contains multiple decimal points");
                 
                 operandContainsDecimalPoint = true;
             }
@@ -128,6 +139,15 @@ class RunMain
         return -1 != validCharacterSet.IndexOf(character);
     }
 
+    static bool IsValidOperator(char character)
+    {
+        switch (character)
+        {
+            case '+': return true;
+            default:  return false;
+        }
+    }
+
     // @returns This function takes a string and attempts to convert it to a double.
     //          If successful, this double is returned, otherwise the program exits
     // @param operandString The prospective operand to be converted to double
@@ -137,7 +157,7 @@ class RunMain
         bool isValidDouble = Double.TryParse(operandString, out operandDouble);
         if (!isValidDouble)
         {
-            ExitProgramWithReason($"\"{operandString}\" is not a valid number, " +
+            ExitProgramWithReason($"{operandString} is not a valid number, " +
                                   "therefore, this program has exited");
         }
 
