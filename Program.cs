@@ -46,9 +46,6 @@ class RunMain
     static double EvaluateExpression(string expression)
     {
         List<double> operandArray = ParseOperands(expression);
-
-        // Assumption: To easily test this program assume the user wants only to
-        // add together numbers
         return AddOperands(operandArray);
     }
 
@@ -61,19 +58,34 @@ class RunMain
     static List<double> ParseOperands(string expression)
     {
         var operandList = new List<double>();
-        string operandString = string.Empty;
+        string operandString;
+        bool doNegateOperand = false;
         while (string.Empty != (operandString = ReadLeftmostOperandAsString(expression)))
         {
+            // Remove from expression its leftmost operand. Please note that this
+            // statement does NOT modify the calling function's argument 1, rather
+            // a new value is created to which expression is re-pointed. This value
+            // equals the modified result
+            expression = expression.Remove(0, operandString.Length);
             double operandDouble = ConvertOperandToDouble(operandString);
+            operandDouble *= (doNegateOperand ? -1 : 1);
             operandList.Add(operandDouble);
-            if (expression.Length == operandString.Length)
+            if (0 == expression.Length)
                 break;
 
-            // Remove from expression its leftmost operand and succeeding operator.
-            // Please note that this statement does NOT modify the calling function's
-            // argument 1, rather a new value is created to which expression is
-            // re-pointed. This value equals the modified result
-            expression = expression.Remove(0, operandString.Length + 1);
+            // Subtraction is handled by negating the operand that follows the
+            // minus operator
+            char theOperator = expression[0];
+            if (theOperator.CompareTo('+') == 0)
+                doNegateOperand = false;
+            else if (theOperator.CompareTo('-') == 0)
+                doNegateOperand = true;
+            else
+                ExitProgramWithReason($"This program does not handle operator {theOperator}");
+
+            // Remove from expression the operator that succeeds the removed operand
+            expression = expression.Remove(0, 1);
+
         }
 
         return operandList;
@@ -158,6 +170,7 @@ class RunMain
         switch (character)
         {
             case '+': return true;
+            case '-': return true;
             default:  return false;
         }
     }
