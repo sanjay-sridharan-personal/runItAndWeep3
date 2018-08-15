@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 class RunMain
 {
@@ -44,25 +45,38 @@ class RunMain
     //        NO whitespace or parenthesis like ( or )
     static double EvaluateExpression(string expression)
     {
-        double[] operandArray = ParseOperands(expression);
+        List<double> operandArray = ParseOperands(expression);
 
         // Assumption: To easily test this program assume the user wants only to
         // add together numbers
         return AddOperands(operandArray);
     }
 
-    // @returns The function takes the arithmetic expression and returns an array
-    //          of its operands (numbers, as opposed to operators which use the
-    //          numbers as input for, say, addition). Array order matches the
-    //          operands encountered when reading expression from left to right
+    // @returns The function takes the arithmetic expression and returns a list
+    //          of its operands (as opposed to operators which use operands as input
+    //          for operations such as addition). List order matches the operands
+    //          encountered when reading the expression from left to right
     // @param expression The arithmetic expression. Assumption: expression contains
     //        NO whitespace or parenthesis like ( or )
-    static double[] ParseOperands(string expression)
+    static List<double> ParseOperands(string expression)
     {
-        string operand = ReadLeftmostOperandAsString(expression);
-        var operandArray = new double[1];
-        operandArray[0] = ConvertOperandToDouble(operand);
-        return operandArray;
+        var operandList = new List<double>();
+        string operandString = string.Empty;
+        while (string.Empty != (operandString = ReadLeftmostOperandAsString(expression)))
+        {
+            double operandDouble = ConvertOperandToDouble(operandString);
+            operandList.Add(operandDouble);
+            if (expression.Length == operandString.Length)
+                break;
+
+            // Remove from expression its leftmost operand and succeeding operator.
+            // Please note that this statement does NOT modify the calling function's
+            // argument 1, rather a new value is created to which expression is
+            // re-pointed. This value equals the modified result
+            expression = expression.Remove(0, operandString.Length + 1);
+        }
+
+        return operandList;
     }
 
     // @returns This function parses the passed-in expression and returns the leftmost
@@ -166,7 +180,7 @@ class RunMain
 
     // @returns This function returns the sum of the operands in the array
     // @param operandArray The list of operands to be added together
-    static double AddOperands(double[] operandArray)
+    static double AddOperands(List<double> operandArray)
     {
         double sum = 0;
         foreach (double operand in operandArray)
