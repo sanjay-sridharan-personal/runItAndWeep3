@@ -6,7 +6,8 @@ class RunMain
     // This program evaluates an arithmetic expression entered by the user
     static void Main()
     {
-        Console.WriteLine("This program evaluates an expression consisting of multiple + and - ending with =");
+        Console.WriteLine("This program evaluates an expression consisting of multiple + and - signs."
+                        + " The expression should end with an = sign:");
         var expression = ReadExpression();
         double value = EvaluateExpression(expression);
         Console.WriteLine($" {value}");
@@ -30,12 +31,17 @@ class RunMain
                     Console.Write("\n" + expression);
                     break;
 
+                // Preserve the user's spaces and tabs so that when they press backspace
+                // or delete the new line looks similar to the one above it sans character
+                case ' ':
+                case '\t':
+                    expression += character;
+                    break;
+
                 default:
-                    bool dummy;
+                    bool dummy = false;
                     if (   IsValidOperator(character)
-                        || IsValidOperandCharacter(out dummy, character, false)
-                        || (' ' == character)
-                        || ('\t' == character))
+                        || IsValidOperandCharacter(out dummy, character, false))
                         expression += character;
                     break;
             }
@@ -50,12 +56,20 @@ class RunMain
     // @param expression The arithmetic expression entered by the user
     static double EvaluateExpression(string expression)
     {
-        // Filter out all whitespace from expression
-        expression = expression.Replace(" ", string.Empty);
-        expression = expression.Replace("\t", string.Empty);
-
+        expression = FilterOutWhitespace(expression);
         List<double> operandArray = ParseOperands(expression);
         return AddOperands(operandArray);
+    }
+
+    // @returns The same as the passed-in expression with all whitespace removed
+    // @param expression The arithmetic expression entered by the user
+    static string FilterOutWhitespace(string expression)
+    {
+        expression = expression.Replace(" ", string.Empty);
+        expression = expression.Replace("\t", string.Empty);
+        expression = expression.Replace("\n", string.Empty);
+        expression = expression.Replace("\r", string.Empty);
+        return expression;
     }
 
     // @returns The function takes the arithmetic expression and returns a list
@@ -174,6 +188,9 @@ class RunMain
         return -1 != validCharacterSet.IndexOf(character);
     }
 
+    // @returns This function determines whether the character passed in is a valid
+    //          operator
+    // @param character The character to test
     static bool IsValidOperator(char character)
     {
         switch (character)
