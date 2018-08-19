@@ -6,15 +6,13 @@ class RunMain
     // This program evaluates an arithmetic expression entered by the user
     static void Main()
     {
-        Console.WriteLine("This program adds multiple numbers together, however, " +
-                          "if you make a mistake typing you cannot backspace:");
+        Console.WriteLine("This program evaluates an expression consisting of multiple + and - ending with =");
         var expression = ReadExpression();
         double value = EvaluateExpression(expression);
         Console.WriteLine($" {value}");
     }
 
-    // @returns This function returns the expression entered by the user as a string
-    //          filtering out all whitespace as it is irrelevant
+    // @returns This function returns the expression entered by the user
     static string ReadExpression()
     {
         var expression = string.Empty;
@@ -24,13 +22,21 @@ class RunMain
         {
             switch(character)
             {
-                case ' ': // Filter out all whitespace from expression
-                case '\t':
-                case '\n':
-                case '\r':
+                // Handle both backspace and delete by removing the previous character
+                // from expression and outputting the entire expression on a new line
+                case '\x8':
+                case '\x7F':
+                    expression = expression.Remove(expression.Length - 1);
+                    Console.Write("\n" + expression);
                     break;
+
                 default:
-                    expression += character;
+                    bool dummy;
+                    if (   IsValidOperator(character)
+                        || IsValidOperandCharacter(out dummy, character, false)
+                        || (' ' == character)
+                        || ('\t' == character))
+                        expression += character;
                     break;
             }
 
@@ -41,10 +47,13 @@ class RunMain
     }
 
     // @returns This function returns the result of the user's arithmetic expression
-    // @param expression The arithmetic expression. Assumption: expression contains
-    //        NO whitespace or parenthesis like ( or )
+    // @param expression The arithmetic expression entered by the user
     static double EvaluateExpression(string expression)
     {
+        // Filter out all whitespace from expression
+        expression = expression.Replace(" ", string.Empty);
+        expression = expression.Replace("\t", string.Empty);
+
         List<double> operandArray = ParseOperands(expression);
         return AddOperands(operandArray);
     }
@@ -54,7 +63,7 @@ class RunMain
     //          for operations such as addition). List order matches the operands
     //          encountered when reading the expression from left to right
     // @param expression The arithmetic expression. Assumption: expression contains
-    //        NO whitespace or parenthesis like ( or )
+    //        NO whitespace
     static List<double> ParseOperands(string expression)
     {
         var operandList = new List<double>();
@@ -99,7 +108,7 @@ class RunMain
     //             following the leftmost operand to be an operator. Assumption: User input will
     //             NOT include exponential notation, e.g. 1E2 which evaluates to 100
     // @param expression The arithmetic expression. Assumption: expression contains
-    //        NO whitespace or parenthesis like ( or )
+    //        NO whitespace
     static string ReadLeftmostOperandAsString(string expression)
     {
         string operand = string.Empty;
@@ -111,7 +120,7 @@ class RunMain
             // can contain exactly 0 or 1 decimal points
             bool isDecimalPoint = false;
             char currentChar = expression[expressionIndex];
-            bool isValidCharacter = IsValidCharacter(out isDecimalPoint, currentChar, 0 == expressionIndex);
+            bool isValidCharacter = IsValidOperandCharacter(out isDecimalPoint, currentChar, 0 == expressionIndex);
             if (!isValidCharacter)
             {
                 // Determine whether the character is a valid operator which signifies
@@ -147,7 +156,7 @@ class RunMain
     // @param character The character to test
     // @param isLeftmost Pass in true if the character is the leftmost one of the
     //        operand, otherwise pass in false
-    static bool IsValidCharacter(out bool isDecimalPoint, char character, bool isLeftmost)
+    static bool IsValidOperandCharacter(out bool isDecimalPoint, char character, bool isLeftmost)
     {
         const string regularCharacters = "0123456789";
         const char   optionalDecimalPoint = '.';
