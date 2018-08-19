@@ -13,7 +13,9 @@ class RunMain
         Console.WriteLine($" {value}");
     }
 
-    // @returns This function returns the expression entered by the user
+    // @returns This function returns the expression entered by the user. It handles
+    //          backspace and delete keys by removing from expression the previous
+    //          character typed and outputting the truncated expression on a new line
     static string ReadExpression()
     {
         var expression = string.Empty;
@@ -23,10 +25,9 @@ class RunMain
         {
             switch(character)
             {
-                // Handle both backspace and delete by removing the previous character
-                // from expression and outputting the entire expression on a new line
-                case '\x8':
-                case '\x7F':
+                // Handle backspace and delete identically
+                case '\x8':  // backspace
+                case '\x7F': // delete
                     expression = expression.Remove(expression.Length - 1);
                     Console.Write("\n" + expression);
                     break;
