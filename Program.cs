@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Arithmetic expression evaluator written in C# that has been tested on MacOS
+
+using System;
 using System.Collections.Generic;
 
 class RunMain
@@ -60,17 +62,6 @@ class RunMain
         expression = FilterOutWhitespace(expression);
         List<double> operandArray = ParseOperands(expression);
         return AddOperands(operandArray);
-    }
-
-    // @returns The same as the passed-in expression with all whitespace removed
-    // @param expression The arithmetic expression entered by the user
-    static string FilterOutWhitespace(string expression)
-    {
-        expression = expression.Replace(" ", string.Empty);
-        expression = expression.Replace("\t", string.Empty);
-        expression = expression.Replace("\n", string.Empty);
-        expression = expression.Replace("\r", string.Empty);
-        return expression;
     }
 
     // @returns The function takes the arithmetic expression and returns a list
@@ -227,6 +218,17 @@ class RunMain
             sum += operand;
 
         return sum;
+    }
+
+    // @returns The same as the passed-in expression with all whitespace removed
+    // @param expression The arithmetic expression entered by the user
+    static string FilterOutWhitespace(string expression)
+    {
+        expression = expression.Replace(" ", string.Empty);
+        expression = expression.Replace("\t", string.Empty);
+        expression = expression.Replace("\n", string.Empty);
+        expression = expression.Replace("\r", string.Empty);
+        return expression;
     }
 
     // This function terminates the program and outputs the reason for it
