@@ -189,6 +189,7 @@ class RunMain
         {
             case '+': return true;
             case '-': return true;
+            case '*': return true;
             default:  return false;
         }
     }
@@ -198,7 +199,7 @@ class RunMain
     // @param operandString The prospective operand to be converted to double
     static double ConvertOperandToDouble(string operandString)
     {
-        double operandDouble = 0;
+        double operandDouble = 0d;
         bool isValidDouble = Double.TryParse(operandString, out operandDouble);
         if (!isValidDouble)
         {
@@ -213,11 +214,18 @@ class RunMain
     // @param operandArray The list of operands to be added together
     static double AddOperands(List<double> operandArray)
     {
-        double sum = 0;
-        foreach (double operand in operandArray)
-            sum += operand;
-
+        double sum = 0d;
+        operandArray.ForEach(operand => sum += operand);
         return sum;
+    }
+
+    // @returns This function returns the product of the operands in the array
+    // @param operandArray The list of operands to be multiplied together
+    static double MultiplyOperands(List<double> operandArray)
+    {
+        double product = 1d;
+        operandArray.ForEach(operand => product *= operand);
+        return product;
     }
 
     // @returns The same as the passed-in expression with all whitespace removed
