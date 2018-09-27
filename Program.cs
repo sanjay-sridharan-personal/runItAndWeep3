@@ -60,30 +60,33 @@ class RunMain
     static double EvaluateExpression(string expression)
     {
         expression = FilterOutWhitespace(expression);
-        List<double> operandArray = ParseOperands(expression);
-        return AddOperands(operandArray);
+        Tuple<List<double>, List<char>> tokenLists = ParseTokens(expression);
+        return EvaluateFromLeftToRight(tokenLists.Item1, tokenLists.Item2);
     }
 
+    //TODO(SS)
     // @returns The function takes the arithmetic expression and returns a list
     //          of its operands (as opposed to operators which use operands as input
     //          for operations such as addition). List order matches the operands
     //          encountered when reading the expression from left to right
     // @param expression The arithmetic expression. Assumption: expression contains
     //        NO whitespace
-    static List<double> ParseOperands(string expression)
+    static Tuple<List<double>, List<char>> ParseTokens(string expression)
     {
         var operandList = new List<double>();
-        string operandString;
+        var operatorList = new List<char>();
         bool doNegateOperand = false;
+        string operandString;
         while (string.Empty != (operandString = ReadLeftmostOperandAsString(expression)))
         {
             // Remove from expression its leftmost operand. Please note that this
-            // statement does NOT modify the calling function's argument 1, rather
-            // a new value is created to which expression is re-pointed. This value
-            // equals the modified result
+            // statement does NOT modify the caller function's argument 1, rather
+            // a new value is created to which expression is pointed. It equals the
+            // modified result
             expression = expression.Remove(0, operandString.Length);
             double operandDouble = ConvertOperandToDouble(operandString);
-            operandDouble *= (doNegateOperand ? -1 : 1);
+            int negationFactor = doNegateOperand ? -1 : +1;
+            operandDouble *= negationFactor;
             operandList.Add(operandDouble);
             if (0 == expression.Length)
                 break;
@@ -91,19 +94,26 @@ class RunMain
             // Subtraction is handled by negating the operand that follows the
             // minus operator
             char theOperator = expression[0];
-            if (theOperator.CompareTo('+') == 0)
-                doNegateOperand = false;
-            else if (theOperator.CompareTo('-') == 0)
-                doNegateOperand = true;
-            else
+            if (!IsValidOperator(theOperator))
                 ExitProgramWithReason($"This program does not handle operator {theOperator}");
+
+            if (theOperator.CompareTo('-') == 0)
+            {
+                operatorList.Add('+');
+                doNegateOperand = true;
+            }
+            else
+            {
+                operatorList.Add(theOperator);
+                doNegateOperand = false;
+            }
 
             // Remove from expression the operator that succeeds the removed operand
             expression = expression.Remove(0, 1);
 
         }
 
-        return operandList;
+        return new Tuple<List<double>, List<char>>(operandList, operatorList);
     }
 
     // @returns This function parses the passed-in expression and returns the leftmost
@@ -210,22 +220,33 @@ class RunMain
         return operandDouble;
     }
 
-    // @returns This function returns the sum of the operands in the array
-    // @param operandArray The list of operands to be added together
-    static double AddOperands(List<double> operandArray)
+    //TODO(SS)
+    static double EvaluateFromLeftToRight(List<double> operandArray, List<char> operatorArray)
     {
-        double sum = 0d;
-        operandArray.ForEach(operand => sum += operand);
-        return sum;
+        double toTheLeft = operandArray[0];
+        double toTheRight = operandArray[1];
+        var theOperator = operatorArray[0];
+        double result = CalculateResult(toTheLeft, toTheRight, theOperator);
+        return result;
     }
 
-    // @returns This function returns the product of the operands in the array
-    // @param operandArray The list of operands to be multiplied together
-    static double MultiplyOperands(List<double> operandArray)
+    // @returns the result of the binary operation specified by 2 operands and an
+    //          operator
+    // @param toTheLeft The operand to the left of the operator passed in
+    // @param toTheRight The operand to the right of the operator passed in
+    // @param theOperator The operation to be performed
+    static double CalculateResult(double toTheLeft, double toTheRight, char theOperator)
     {
-        double product = 1d;
-        operandArray.ForEach(operand => product *= operand);
-        return product;
+        if (!IsValidOperator(theOperator))
+            ExitProgramWithReason($"\"{theOperator}\" is an unexpected operator");
+
+        switch (theOperator)
+        {
+            case '+': return toTheLeft + toTheRight;
+            case '-': return toTheLeft - toTheRight;
+            case '*': return toTheLeft * toTheRight;
+            default:  return 0D;
+        }
     }
 
     // @returns The same as the passed-in expression with all whitespace removed
