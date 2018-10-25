@@ -64,11 +64,10 @@ class RunMain
         return EvaluateFromLeftToRight(tokenLists.Item1, tokenLists.Item2);
     }
 
-    //TODO(SS)
-    // @returns The function takes the arithmetic expression and returns a list
-    //          of its operands (as opposed to operators which use operands as input
-    //          for operations such as addition). List order matches the operands
-    //          encountered when reading the expression from left to right
+    // @returns The function takes the arithmetic expression and returns the following:
+    //          1. In Tuple.Item1, a list of expression operands (e.g. in 1 + 2,
+    //             the operands are 1 and 2). List order is from left to right
+    //          2. In Tuple.Item2, a list of expression operators from left to right
     // @param expression The arithmetic expression. Assumption: expression contains
     //        NO whitespace
     static Tuple<List<double>, List<char>> ParseTokens(string expression)
@@ -110,7 +109,6 @@ class RunMain
 
             // Remove from expression the operator that succeeds the removed operand
             expression = expression.Remove(0, 1);
-
         }
 
         return new Tuple<List<double>, List<char>>(operandList, operatorList);
@@ -220,13 +218,19 @@ class RunMain
         return operandDouble;
     }
 
-    //TODO(SS)
-    static double EvaluateFromLeftToRight(List<double> operandArray, List<char> operatorArray)
+    // @returns This function returns the result of the user's arithmetic expression
+    //          that has been parsed into 2 lists. BODMAS / PEMDAS is ignored as
+    //          expression is evaluated from left to right, e.g. 2 + 3 * 5 =
+    //          1. 25, left to right
+    //          2. 17, BODMAS / PEMDAS
+    // @operands List of operands from left to right
+    // @operators List of operators from left to right
+    static double EvaluateFromLeftToRight(List<double> operands, List<char> operators)
     {
-        double toTheLeft = operandArray[0];
-        double toTheRight = operandArray[1];
-        var theOperator = operatorArray[0];
-        double result = CalculateResult(toTheLeft, toTheRight, theOperator);
+        double result = operands[0];
+        for (int i = 0; i < operators.Count; ++i)
+            result = CalculateResult(result, operands[i + 1], operators[i]);
+
         return result;
     }
 
