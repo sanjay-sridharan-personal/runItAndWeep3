@@ -6,8 +6,8 @@
 Arithmetic Expression Evaluator
 
 ## Current Tasks:
-> - Emil: Review multiplication PR, Add Windows solution files
-> - Sam: Review multiplication PR, Blocking Key Presses
+> - Emil: Review and merge multiplication PR, Add Windows solution files
+> - Sam: Review and merge multiplication PR, Blocking Key Presses
 > - Sanjay: Implement BODMAS / PEMDAS feature
 
 ## Current Blockers:
