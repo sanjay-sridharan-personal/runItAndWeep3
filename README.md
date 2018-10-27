@@ -6,14 +6,14 @@
 Arithmetic Expression Evaluator
 
 ## Current Tasks:
-> - Emil:
-> - Sam: Blocking Key Presses
-> - Sanjay:
+> - Emil: Review multiplication PR, Add Windows solution files
+> - Sam: Review multiplication PR, Blocking Key Presses
+> - Sanjay: Implement BODMAS / PEMDAS feature
 
 ## Current Blockers:
 > - Emil:
 > - Sam:
-> - Sanjay:
+> - Sanjay: Resolve why my local master states that it is up to date with origin/master, however, local master does not contain README.md
 
 ---
 
