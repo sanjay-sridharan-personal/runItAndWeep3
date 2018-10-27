@@ -13,7 +13,7 @@ Arithmetic Expression Evaluator
 ## Current Blockers:
 > - Emil:
 > - Sam:
-> - Sanjay: Resolve why my local master states that it is up to date with origin/master, however, local master does not contain README.md
+> - Sanjay: Resolve why my local master states that it is up to date with origin/master, however, local master does not contain README.md.  EDIT: I was doing "git checkout master", however, that just switched to master, therefore, I needed to use "git pull" also which solved it. 
 
 ---
 
