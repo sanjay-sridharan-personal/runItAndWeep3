@@ -8,7 +8,7 @@ function Multiply(x, y) {
     return x * y;
 }
 function TryDivide(x, y) {
-    if (x > y)
+    if (x >= y)
         return x / y;
     else
         return 0;
