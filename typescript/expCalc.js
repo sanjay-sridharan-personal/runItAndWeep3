@@ -14,8 +14,8 @@ function TryDivide(x, y) {
         return 0;
 }
 function getOperands(cleanInputString) {
-    var numArray = [];
-    for (var i in cleanInputString) {
+    let numArray = [];
+    for (let i in cleanInputString) {
         numArray[i] = parseFloat(cleanInputString[i]);
     }
     return numArray;
@@ -56,5 +56,5 @@ function calcMain(stringExp) {
         expResult = "Error in eval of expression";
     return "stringExp :" + stringExp + "<br>" + "  modExp : " + modExp + "<br>" + "    numArray : " + numArray + "<br>" + "   opArray : " + opArray + "<br>" + "expResult = " + expResult;
 }
-var expString = prompt("Enter expression: ");
+let expString = prompt("Enter expression: ");
 document.body.innerHTML = calcMain(expString);
