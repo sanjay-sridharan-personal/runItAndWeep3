@@ -7,8 +7,8 @@ Arithmetic Expression Evaluator
 
 ## Current Tasks:
 > - Emil: Address typescript code review comments
-> - Sam: Converting to Typescript
-> - Sanjay: Implement BODMAS
+> - Sam:
+> - Sanjay:
 > - Suman:
 
 ## Current Blockers:
@@ -20,9 +20,9 @@ Arithmetic Expression Evaluator
 ---
 
 ## Future Tasks:
-1. Must NOT crash on division by 0. Instead it should display a descriptive error message 
-2. CSharp: Block garbage key presses
-3.
+1. Implement BODMAS
+2. Must NOT crash on division by 0. Instead it should display a descriptive error message
+3. CSharp: Block garbage key presses
 
 ## Ideas:
 1.
